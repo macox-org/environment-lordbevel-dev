@@ -1,40 +1,105 @@
 autoUpdate:
   enabled: true
-  schedule: '0 0 * * *'
+  schedule: 0 0 * * *
+bootConfigURL: https://github.com/cloudbees/arcalos-boot-config.git
 cluster:
-  clusterName: ""
-  environmentGitOwner: ""
-  project: ""
+  azure: {}
+  chartRepository: http://bucketrepo/bucketrepo/charts/
+  clusterName: lordbevel
+  environmentGitOwner: macox-org
+  environmentGitPublic: true
+  externalDNSSAName: lordbevel-dn
+  gitKind: github
+  gitName: github
+  gitPublic: true
+  gitServer: https://github.com
+  gke:
+    projectNumber: "179462133148"
+  kanikoSAName: lordbevel-ko
+  namespace: jx
+  project: cbjx-lordbevel
   provider: gke
-  zone: ""
-gitops: true
-githubApp:
-  enabled: false
-  url: ""
-  schedule: '0 0 * * *'
+  registry: gcr.io
+  vaultName: lordbevel
+  vaultSAName: lordbevel-vt
+  zone: us-central1-c
 environments:
-- key: dev
-- key: staging
-- key: production
+- ingress:
+    cloud_dns_secret_name: external-dns-gcp-sa
+    domain: cbjx-lordbevel.play-jxaas.live
+    domainIssuerURL: https://jx-tenant-service-jx.mgmt.play-jxaas.live
+    externalDNS: true
+    namespaceSubDomain: -jx.
+    tls:
+      email: jenkins-x@cloudbees.com
+      enabled: true
+      production: false
+  key: dev
+  repository: environment-lordbevel-dev
+- ingress:
+    domain: ""
+    externalDNS: false
+    namespaceSubDomain: ""
+    tls:
+      email: ""
+      enabled: false
+      production: false
+  key: staging
+  repository: environment-lordbevel-staging
+- ingress:
+    domain: ""
+    externalDNS: false
+    namespaceSubDomain: ""
+    tls:
+      email: ""
+      enabled: false
+      production: false
+  key: production
+  repository: environment-lordbevel-production
+githubApp:
+  enabled: true
+  schedule: 0 0 * * *
+  url: https://lighthouse-githubapp-jx.mgmt.play-jxaas.live
+gitops: true
 ingress:
-  domain: ""
+  cloud_dns_secret_name: external-dns-gcp-sa
+  domain: cbjx-lordbevel.play-jxaas.live
+  domainIssuerURL: https://jx-tenant-service-jx.mgmt.play-jxaas.live
   externalDNS: true
+  namespaceSubDomain: -jx.
   tls:
     email: jenkins-x@cloudbees.com
     enabled: true
     production: false
 kaniko: true
+repository: bucketrepo
 secretStorage: vault
 storage:
+  backup:
+    enabled: true
+    url: gs://cbjx-lordbevel-backup
   logs:
-    enabled: false
-    url: ""
+    enabled: true
+    url: gs://cbjx-lordbevel-lts
   reports:
     enabled: false
     url: ""
   repository:
-    enabled: false
-    url: ""
+    enabled: true
+    url: gs://cbjx-lordbevel-repository
+vault:
+  aws: {}
+  bucket: cbjx-lordbevel-vault
+  key: lordbevel-caa79772327d-crypto-key
+  keyring: lordbevel-caa79772327d-keyring
+  name: lordbevel
+  serviceAccount: lordbevel-vt
 velero:
   namespace: velero
-webhook: prow
+  schedule: ""
+  serviceAccount: lordbevel-vo
+  ttl: ""
+versionStream:
+  ref: v0.0.445
+  url: https://github.com/cloudbees/arcalos-jenkins-x-versions.git
+webhook: lighthouse
